@@ -1,0 +1,63 @@
+{
+  "name": "cocomail",
+  "version": "0.1.0",
+  "description": "Self-hosted, Resend-shaped transactional email API and Node.js client.",
+  "keywords": [
+    "email",
+    "transactional-email",
+    "smtp",
+    "postfix",
+    "sendmail",
+    "self-hosted",
+    "resend-alternative"
+  ],
+  "license": "MIT",
+  "author": "CoCoMail contributors",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "bin": {
+    "cocomail": "bin/cocomail.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./server": "./src/server.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "types/",
+    "docs/",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node bin/cocomail.js serve",
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm test"
+  },
+  "dependencies": {
+    "nodemailer": "^10.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cocoio/cocomail.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cocoio/cocomail/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
