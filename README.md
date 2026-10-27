@@ -143,7 +143,24 @@ emailthecode send \
 
 # Check SMTP, sendmail, and DNS records
 emailthecode doctor --domain example.com --selector emailthecode
+
+# Generate a ready-to-send DNS instruction page from your live config
+emailthecode setup --domain example.com --out dnsupdate.html
 ```
+
+`emailthecode setup` auto-detects the mail host, public IP, DKIM key, SPF
+includes, and DMARC policy. The generated page is self-contained (copy buttons,
+copy-all, `.txt` download, verification commands) and contains only public DNS
+data. The same page is served by the API at `GET /setup` (and
+`GET /setup?format=txt`), populated from the environment.
+
+```bash
+# Serve the setup page from the running API
+curl -s http://127.0.0.1:3100/setup | less
+curl -s 'http://127.0.0.1:3100/setup?format=txt'
+```
+
+See [`docs/SETUP.md`](docs/SETUP.md) for every option and environment variable.
 
 ## Configuration
 

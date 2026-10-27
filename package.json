@@ -1,6 +1,6 @@
 {
   "name": "emailthecode",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Self-hosted, Resend-shaped transactional email API and Node.js client.",
   "keywords": [
     "email",

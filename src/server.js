@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { EmailTheCode } = require('./index');
+const { setupConfigFromEnv, renderSetupPage, renderSetupText } = require('./setup-page');
 
 const MAX_BODY = 2 * 1024 * 1024;
 const DEFAULT_RATE_LIMIT = 120;
@@ -75,6 +76,7 @@ function createApp(options) {
     logFile = process.env.EMAILTHECODE_LOG_FILE || process.env.MAIL_LOG_FILE || './emailthecode.jsonl',
     allowedFromDomains = [],
     rateLimit = DEFAULT_RATE_LIMIT,
+    setup = {},
     logger = console,
   } = options || {};
 
@@ -133,6 +135,26 @@ function createApp(options) {
         service: 'emailthecode',
         time: new Date().toISOString(),
       });
+    }
+
+    // Public setup page: DNS records for this deployment. Contains no secrets.
+    if (req.method === 'GET' && url.pathname === '/setup') {
+      if (url.searchParams.get('format') === 'txt') {
+        const text = renderSetupText(setup);
+        res.writeHead(200, {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Content-Length': Buffer.byteLength(text),
+          'Cache-Control': 'no-store',
+        });
+        return res.end(text);
+      }
+      const html = renderSetupPage(setup);
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(html),
+        'Cache-Control': 'no-store',
+      });
+      return res.end(html);
     }
 
     if (!apiKeyOk(req, apiKey)) return json(res, 401, { error: 'Unauthorized' });
@@ -221,12 +243,14 @@ function startServer(options = {}) {
   const env = options.env || process.env;
   const config = configFromEnv(env);
   const mailer = options.mailer || new EmailTheCode();
+  const setup = options.setup || setupConfigFromEnv(env);
   const server = createApp({
     mailer,
     apiKey: config.apiKey,
     logFile: config.logFile,
     allowedFromDomains: config.allowedFromDomains,
     rateLimit: config.rateLimit,
+    setup,
     logger: options.logger || console,
   });
   const host = options.host || config.host;
@@ -243,6 +267,7 @@ module.exports = {
   createApp,
   startServer,
   configFromEnv,
+  setupConfigFromEnv,
   // exported for tests
   _internal: { apiKeyOk, addressDomain, validEmail },
 };
