@@ -15,11 +15,20 @@ email API while leaving delivery, logs, and infrastructure under your control.
 
 ## Install
 
+Latest (0.2.0, GitHub release):
+
 ```bash
-npm install emailthecode
+npm install https://github.com/tehNate/EmailTheCode/releases/download/v0.2.0/emailthecode-0.2.0.tgz
 ```
 
-Requires Node.js 18 or newer.
+Or from the tag:
+
+```bash
+npm install github:tehNate/EmailTheCode#v0.2.0
+```
+
+The npm registry currently has **0.1.0** (`npm install emailthecode`); the
+0.2.0 npm publish is on hold. Requires Node.js 18 or newer.
 
 ## Quick start
 
