@@ -21,8 +21,8 @@ data in the report. Use placeholders and redact sensitive values.
 
 ## Operational guidance
 
-- Keep `COCOMAIL_API_KEY` secret and rotate it if exposed.
+- Keep `EMAILTHECODE_API_KEY` secret and rotate it if exposed.
 - Bind the HTTP API to localhost and terminate TLS at a reverse proxy.
-- Set `COCOMAIL_ALLOWED_FROM_DOMAINS` to the domains your deployment may send as.
+- Set `EMAILTHECODE_ALLOWED_FROM_DOMAINS` to the domains your deployment may send as.
 - Run the service as a non-root user.
 - Never commit `.env` files or credentials.

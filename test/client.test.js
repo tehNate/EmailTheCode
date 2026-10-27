@@ -2,17 +2,17 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { CocoMail, Resend } = require('../src');
+const { EmailTheCode, Resend } = require('../src');
 
-test('exports a CocoMail client and Resend alias', () => {
-  assert.equal(typeof CocoMail, 'function');
-  assert.equal(Resend, CocoMail);
-  const client = new CocoMail();
+test('exports a EmailTheCode client and Resend alias', () => {
+  assert.equal(typeof EmailTheCode, 'function');
+  assert.equal(Resend, EmailTheCode);
+  const client = new EmailTheCode();
   assert.equal(typeof client.emails.send, 'function');
 });
 
 test('validates required fields and addresses', async () => {
-  const client = new CocoMail({ transport: async () => ({}) });
+  const client = new EmailTheCode({ transport: async () => ({}) });
   await assert.rejects(() => client.emails.send({ from: 'a@example.com' }), /to/i);
   await assert.rejects(() => client.emails.send({
     from: 'not-an-address', to: 'b@example.com', subject: 's', text: 't',
@@ -24,7 +24,7 @@ test('validates required fields and addresses', async () => {
 
 test('sends through a custom transport and returns a Resend-shaped result', async () => {
   let captured;
-  const client = new CocoMail({
+  const client = new EmailTheCode({
     transport: async (input) => {
       captured = input;
       return { queueId: 'QUEUE123' };
@@ -50,7 +50,7 @@ test('sends through a custom transport and returns a Resend-shaped result', asyn
 });
 
 test('accepts text-only mail', async () => {
-  const client = new CocoMail({ transport: async ({ message }) => {
+  const client = new EmailTheCode({ transport: async ({ message }) => {
     assert.ok(message.includes('Content-Type: text/plain'));
     return {};
   } });
@@ -65,7 +65,7 @@ test('accepts text-only mail', async () => {
 
 test('does not allow header injection through subject or custom headers', async () => {
   let message;
-  const client = new CocoMail({ transport: async (input) => {
+  const client = new EmailTheCode({ transport: async (input) => {
     message = input.message;
     return {};
   } });
@@ -86,7 +86,7 @@ test('does not allow header injection through subject or custom headers', async 
 });
 
 test('rejects more than 50 recipients', async () => {
-  const client = new CocoMail({ transport: async () => ({}) });
+  const client = new EmailTheCode({ transport: async () => ({}) });
   const recipients = Array.from({ length: 51 }, (_, i) => `u${i}@example.com`);
   await assert.rejects(() => client.emails.send({
     from: 'noreply@example.com',

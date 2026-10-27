@@ -3,26 +3,26 @@
 
 const fs = require('node:fs');
 const dns = require('node:dns').promises;
-const { CocoMail } = require('../src');
+const { EmailTheCode } = require('../src');
 const { startServer } = require('../src/server');
 const pkg = require('../package.json');
 
 function usage() {
-  console.log(`CoCoMail ${pkg.version}
+  console.log(`EmailTheCode ${pkg.version}
 
 Usage:
-  cocomail serve
-  cocomail send --from <address> --to <address[,address]> --subject <text> (--html <html> | --text <text>)
-  cocomail doctor [--domain example.com] [--selector cocomail]
+  emailthecode serve
+  emailthecode send --from <address> --to <address[,address]> --subject <text> (--html <html> | --text <text>)
+  emailthecode doctor [--domain example.com] [--selector emailthecode]
 
 Environment:
-  COCOMAIL_API_KEY                 Bearer token for the HTTP API (required for serve)
-  COCOMAIL_HOST                    Bind host (default 127.0.0.1)
-  COCOMAIL_PORT                    Bind port (default 3100)
-  COCOMAIL_LOG_FILE                JSONL send log (default ./cocomail.jsonl)
-  COCOMAIL_ALLOWED_FROM_DOMAINS    Comma-separated sender domains (optional)
-  COCOMAIL_SMTP_HOST/PORT/USER/PASS  SMTP relay (optional)
-  COCOMAIL_SENDMAIL                sendmail path (default /usr/sbin/sendmail)
+  EMAILTHECODE_API_KEY                 Bearer token for the HTTP API (required for serve)
+  EMAILTHECODE_HOST                    Bind host (default 127.0.0.1)
+  EMAILTHECODE_PORT                    Bind port (default 3100)
+  EMAILTHECODE_LOG_FILE                JSONL send log (default ./emailthecode.jsonl)
+  EMAILTHECODE_ALLOWED_FROM_DOMAINS    Comma-separated sender domains (optional)
+  EMAILTHECODE_SMTP_HOST/PORT/USER/PASS  SMTP relay (optional)
+  EMAILTHECODE_SENDMAIL                sendmail path (default /usr/sbin/sendmail)
 `);
 }
 
@@ -47,7 +47,7 @@ async function send(args) {
     process.exitCode = 2;
     return;
   }
-  const mailer = new CocoMail();
+  const mailer = new EmailTheCode();
   const result = await mailer.emails.send({
     from,
     to: String(to).split(',').map((value) => value.trim()).filter(Boolean),
@@ -61,14 +61,14 @@ async function send(args) {
 
 async function doctor(args) {
   const domain = takeFlag(args, '--domain');
-  const selector = takeFlag(args, '--selector') || 'cocomail';
-  const smtpHost = process.env.COCOMAIL_SMTP_HOST || process.env.SMTP_HOST;
-  const smtpPort = process.env.COCOMAIL_SMTP_PORT || process.env.SMTP_PORT || '25';
-  const sendmail = process.env.COCOMAIL_SENDMAIL || '/usr/sbin/sendmail';
-  console.log('CoCoMail ' + pkg.version);
+  const selector = takeFlag(args, '--selector') || 'emailthecode';
+  const smtpHost = process.env.EMAILTHECODE_SMTP_HOST || process.env.SMTP_HOST;
+  const smtpPort = process.env.EMAILTHECODE_SMTP_PORT || process.env.SMTP_PORT || '25';
+  const sendmail = process.env.EMAILTHECODE_SENDMAIL || '/usr/sbin/sendmail';
+  console.log('EmailTheCode ' + pkg.version);
   console.log('Node ' + process.version);
-  console.log('API key configured: ' + Boolean(process.env.COCOMAIL_API_KEY || process.env.MAIL_API_KEY));
-  console.log('Allowed from domains: ' + (process.env.COCOMAIL_ALLOWED_FROM_DOMAINS || '(any)'));
+  console.log('API key configured: ' + Boolean(process.env.EMAILTHECODE_API_KEY || process.env.MAIL_API_KEY));
+  console.log('Allowed from domains: ' + (process.env.EMAILTHECODE_ALLOWED_FROM_DOMAINS || '(any)'));
   console.log('SMTP: ' + (smtpHost ? smtpHost + ':' + smtpPort : '(not configured; sendmail fallback)'));
   console.log('sendmail exists: ' + fs.existsSync(sendmail) + ' (' + sendmail + ')');
 
@@ -127,6 +127,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error('cocomail:', err.message);
+  console.error('emailthecode:', err.message);
   process.exit(1);
 });

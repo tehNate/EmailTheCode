@@ -1,6 +1,6 @@
-# Contributing to CoCoMail
+# Contributing to EmailTheCode
 
-Thanks for helping improve CoCoMail.
+Thanks for helping improve EmailTheCode.
 
 ## Development setup
 

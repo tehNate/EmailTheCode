@@ -73,7 +73,7 @@ function buildMimeMessage({ from, to, subject, html, text, replyTo, headers }) {
   msg += 'Subject: ' + cleanHeader(subject) + '\r\n';
   msg += 'Date: ' + new Date().toUTCString() + '\r\n';
   msg += 'Message-ID: ' + messageId + '\r\n';
-  msg += 'X-Mailer: CoCoMail\r\n';
+  msg += 'X-Mailer: EmailTheCode\r\n';
   msg += 'Auto-Submitted: auto-generated\r\n';
   msg += 'MIME-Version: 1.0\r\n';
   for (const [name, value] of cleanCustomHeaders(headers)) {
@@ -103,11 +103,11 @@ function buildMimeMessage({ from, to, subject, html, text, replyTo, headers }) {
 
 function resolveSmtpConfig(config) {
   const smtp = (config && config.smtp) || {};
-  const host = smtp.host || process.env.COCOMAIL_SMTP_HOST || process.env.SMTP_HOST;
+  const host = smtp.host || process.env.EMAILTHECODE_SMTP_HOST || process.env.SMTP_HOST;
   if (!host) return null;
-  const port = Number(smtp.port || process.env.COCOMAIL_SMTP_PORT || process.env.SMTP_PORT || 25);
-  const user = smtp.user || process.env.COCOMAIL_SMTP_USER || process.env.SMTP_USER;
-  const pass = smtp.pass || smtp.password || process.env.COCOMAIL_SMTP_PASS || process.env.SMTP_PASS;
+  const port = Number(smtp.port || process.env.EMAILTHECODE_SMTP_PORT || process.env.SMTP_PORT || 25);
+  const user = smtp.user || process.env.EMAILTHECODE_SMTP_USER || process.env.SMTP_USER;
+  const pass = smtp.pass || smtp.password || process.env.EMAILTHECODE_SMTP_PASS || process.env.SMTP_PASS;
   return {
     host,
     port,
@@ -123,7 +123,7 @@ function resolveSmtpConfig(config) {
 
 function sendViaSendmail({ message, from, sendmailPath }) {
   return new Promise((resolve, reject) => {
-    const path = sendmailPath || process.env.COCOMAIL_SENDMAIL || DEFAULT_SENDMAIL;
+    const path = sendmailPath || process.env.EMAILTHECODE_SENDMAIL || DEFAULT_SENDMAIL;
     if (!fs.existsSync(path)) {
       reject(new Error('sendmail binary not found at ' + path));
       return;
@@ -245,7 +245,7 @@ class Emails {
   }
 }
 
-class CocoMail {
+class EmailTheCode {
   constructor(config = {}) {
     this.config = config || {};
     this.emails = new Emails(this);
@@ -253,9 +253,9 @@ class CocoMail {
 }
 
 module.exports = {
-  CocoMail,
-  Resend: CocoMail,
-  default: CocoMail,
+  EmailTheCode,
+  Resend: EmailTheCode,
+  default: EmailTheCode,
   // Exported for tests and advanced embedding.
   _internal: { buildMimeMessage, bareAddress, validatePayload, stripHtml },
 };

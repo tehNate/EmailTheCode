@@ -1,8 +1,8 @@
-# CoCoMail
+# EmailTheCode
 
 **Self-hosted, Resend-shaped transactional email for Node.js.**
 
-CoCoMail is a small email SDK and HTTP API that sends through your own SMTP
+EmailTheCode is a small email SDK and HTTP API that sends through your own SMTP
 relay or local `sendmail` binary. It keeps the developer experience of a hosted
 email API while leaving delivery, logs, and infrastructure under your control.
 
@@ -16,7 +16,7 @@ email API while leaving delivery, logs, and infrastructure under your control.
 ## Install
 
 ```bash
-npm install cocomail
+npm install emailthecode
 ```
 
 Requires Node.js 18 or newer.
@@ -24,9 +24,9 @@ Requires Node.js 18 or newer.
 ## Quick start
 
 ```js
-const { CocoMail } = require('cocomail');
+const { EmailTheCode } = require('emailthecode');
 
-const mail = new CocoMail();
+const mail = new EmailTheCode();
 
 await mail.emails.send({
   from: 'Example App <noreply@example.com>',
@@ -40,7 +40,7 @@ await mail.emails.send({
 Use `Resend` as an alias when migrating existing code:
 
 ```js
-const { Resend } = require('cocomail');
+const { Resend } = require('emailthecode');
 const mail = new Resend();
 ```
 
@@ -48,7 +48,7 @@ const mail = new Resend();
 
 ### 1. Local sendmail / Postfix
 
-If no SMTP host is configured, CoCoMail invokes `/usr/sbin/sendmail` with the
+If no SMTP host is configured, EmailTheCode invokes `/usr/sbin/sendmail` with the
 message on stdin. This is the simplest setup on a server that already runs
 Postfix:
 
@@ -61,10 +61,10 @@ sudo apt-get install postfix mailutils
 Set an SMTP host to use a local or remote relay:
 
 ```bash
-COCOMAIL_SMTP_HOST=smtp.example.com
-COCOMAIL_SMTP_PORT=587
-COCOMAIL_SMTP_USER=mailer
-COCOMAIL_SMTP_PASS=change-me
+EMAILTHECODE_SMTP_HOST=smtp.example.com
+EMAILTHECODE_SMTP_PORT=587
+EMAILTHECODE_SMTP_USER=mailer
+EMAILTHECODE_SMTP_PASS=change-me
 ```
 
 `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, and `SMTP_PASS` are accepted as legacy
@@ -75,35 +75,35 @@ aliases.
 Run the server:
 
 ```bash
-export COCOMAIL_API_KEY="$(openssl rand -hex 32)"
-export COCOMAIL_ALLOWED_FROM_DOMAINS="example.com"
-cocomail serve
+export EMAILTHECODE_API_KEY="$(openssl rand -hex 32)"
+export EMAILTHECODE_ALLOWED_FROM_DOMAINS="example.com"
+emailthecode serve
 ```
 
 Or via Docker:
 
 ```bash
-docker build -t cocomail .
+docker build -t emailthecode .
 docker run --rm -p 3100:3100 \
-  -e COCOMAIL_API_KEY=change-me \
-  -e COCOMAIL_ALLOWED_FROM_DOMAINS=example.com \
-  -e COCOMAIL_HOST=0.0.0.0 \
-  -e COCOMAIL_LOG_FILE=/tmp/cocomail.jsonl \
-  cocomail
+  -e EMAILTHECODE_API_KEY=change-me \
+  -e EMAILTHECODE_ALLOWED_FROM_DOMAINS=example.com \
+  -e EMAILTHECODE_HOST=0.0.0.0 \
+  -e EMAILTHECODE_LOG_FILE=/tmp/emailthecode.jsonl \
+  emailthecode
 ```
 
 Send a message:
 
 ```bash
 curl -s http://127.0.0.1:3100/emails \
-  -H "Authorization: Bearer $COCOMAIL_API_KEY" \
+  -H "Authorization: Bearer $EMAILTHECODE_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "from": "Example App <noreply@example.com>",
     "to": "user@example.net",
     "subject": "Hello",
-    "html": "<p>Hello from CoCoMail</p>",
-    "text": "Hello from CoCoMail"
+    "html": "<p>Hello from EmailTheCode</p>",
+    "text": "Hello from EmailTheCode"
   }'
 ```
 
@@ -126,40 +126,40 @@ Endpoints:
 | `GET` | `/emails/:id` | Look up a send-log entry |
 | `GET` | `/emails?limit=50` | Recent sends |
 
-All endpoints except `/health` require `Authorization: Bearer <COCOMAIL_API_KEY>`.
+All endpoints except `/health` require `Authorization: Bearer <EMAILTHECODE_API_KEY>`.
 
 ## CLI
 
 ```bash
 # Start the HTTP API
-cocomail serve
+emailthecode serve
 
 # Send a one-off test message
-cocomail send \
+emailthecode send \
   --from "Example <noreply@example.com>" \
   --to user@example.net \
   --subject "Test" \
   --text "Hello"
 
 # Check SMTP, sendmail, and DNS records
-cocomail doctor --domain example.com --selector cocomail
+emailthecode doctor --domain example.com --selector emailthecode
 ```
 
 ## Configuration
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `COCOMAIL_API_KEY` | required for `serve` | Bearer token |
-| `COCOMAIL_HOST` | `127.0.0.1` | Bind host |
-| `COCOMAIL_PORT` | `3100` | Bind port |
-| `COCOMAIL_LOG_FILE` | `./cocomail.jsonl` | Metadata-only send log |
-| `COCOMAIL_ALLOWED_FROM_DOMAINS` | empty (allow any) | Comma-separated sender domains |
-| `COCOMAIL_RATE_LIMIT` | `120` | Requests/minute/IP |
-| `COCOMAIL_SMTP_HOST` | unset | Use SMTP instead of sendmail |
-| `COCOMAIL_SMTP_PORT` | `25` | SMTP port |
-| `COCOMAIL_SMTP_USER` | unset | SMTP username |
-| `COCOMAIL_SMTP_PASS` | unset | SMTP password |
-| `COCOMAIL_SENDMAIL` | `/usr/sbin/sendmail` | sendmail path |
+| `EMAILTHECODE_API_KEY` | required for `serve` | Bearer token |
+| `EMAILTHECODE_HOST` | `127.0.0.1` | Bind host |
+| `EMAILTHECODE_PORT` | `3100` | Bind port |
+| `EMAILTHECODE_LOG_FILE` | `./emailthecode.jsonl` | Metadata-only send log |
+| `EMAILTHECODE_ALLOWED_FROM_DOMAINS` | empty (allow any) | Comma-separated sender domains |
+| `EMAILTHECODE_RATE_LIMIT` | `120` | Requests/minute/IP |
+| `EMAILTHECODE_SMTP_HOST` | unset | Use SMTP instead of sendmail |
+| `EMAILTHECODE_SMTP_PORT` | `25` | SMTP port |
+| `EMAILTHECODE_SMTP_USER` | unset | SMTP username |
+| `EMAILTHECODE_SMTP_PASS` | unset | SMTP password |
+| `EMAILTHECODE_SENDMAIL` | `/usr/sbin/sendmail` | sendmail path |
 
 ## DNS and deliverability
 
@@ -171,7 +171,7 @@ A sending domain needs SPF, DKIM, DMARC, and a matching PTR record. See
 
 - The API binds to `127.0.0.1` by default. Put it behind a TLS reverse proxy if
   you expose it.
-- Set `COCOMAIL_ALLOWED_FROM_DOMAINS` in production. An empty value allows any
+- Set `EMAILTHECODE_ALLOWED_FROM_DOMAINS` in production. An empty value allows any
   sender domain that can reach the API.
 - The in-memory rate limiter is per process; use a shared limiter if you run
   multiple instances.

@@ -4,7 +4,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { CocoMail } = require('./index');
+const { EmailTheCode } = require('./index');
 
 const MAX_BODY = 2 * 1024 * 1024;
 const DEFAULT_RATE_LIMIT = 120;
@@ -72,14 +72,14 @@ function createApp(options) {
   const {
     mailer,
     apiKey,
-    logFile = process.env.COCOMAIL_LOG_FILE || process.env.MAIL_LOG_FILE || './cocomail.jsonl',
+    logFile = process.env.EMAILTHECODE_LOG_FILE || process.env.MAIL_LOG_FILE || './emailthecode.jsonl',
     allowedFromDomains = [],
     rateLimit = DEFAULT_RATE_LIMIT,
     logger = console,
   } = options || {};
 
   if (!mailer || !mailer.emails || typeof mailer.emails.send !== 'function') {
-    throw new Error('createApp requires a CocoMail instance');
+    throw new Error('createApp requires a EmailTheCode instance');
   }
   if (!apiKey) throw new Error('apiKey is required');
 
@@ -105,7 +105,7 @@ function createApp(options) {
     try {
       fs.appendFileSync(logFile, JSON.stringify(entry) + '\n');
     } catch (err) {
-      logger.error('[CoCoMail] log write failed:', err.message);
+      logger.error('[EmailTheCode] log write failed:', err.message);
     }
   }
 
@@ -130,7 +130,7 @@ function createApp(options) {
     if (req.method === 'GET' && url.pathname === '/health') {
       return json(res, 200, {
         status: 'ok',
-        service: 'cocomail',
+        service: 'emailthecode',
         time: new Date().toISOString(),
       });
     }
@@ -180,7 +180,7 @@ function createApp(options) {
           status: out.status || 'queued',
         });
       } catch (err) {
-        logger.error('[CoCoMail] send failed:', err.message);
+        logger.error('[EmailTheCode] send failed:', err.message);
         return json(res, 502, { error: err.message });
       }
     }
@@ -202,25 +202,25 @@ function createApp(options) {
 }
 
 function configFromEnv(env = process.env) {
-  const apiKey = env.COCOMAIL_API_KEY || env.MAIL_API_KEY;
-  if (!apiKey) throw new Error('COCOMAIL_API_KEY is not set');
+  const apiKey = env.EMAILTHECODE_API_KEY || env.MAIL_API_KEY;
+  if (!apiKey) throw new Error('EMAILTHECODE_API_KEY is not set');
   return {
-    host: env.COCOMAIL_HOST || env.MAIL_HOST || '127.0.0.1',
-    port: parseInt(env.COCOMAIL_PORT || env.MAIL_PORT || '3100', 10),
+    host: env.EMAILTHECODE_HOST || env.MAIL_HOST || '127.0.0.1',
+    port: parseInt(env.EMAILTHECODE_PORT || env.MAIL_PORT || '3100', 10),
     apiKey,
-    logFile: env.COCOMAIL_LOG_FILE || env.MAIL_LOG_FILE || './cocomail.jsonl',
-    allowedFromDomains: (env.COCOMAIL_ALLOWED_FROM_DOMAINS || env.MAIL_ALLOWED_FROM_DOMAINS || '')
+    logFile: env.EMAILTHECODE_LOG_FILE || env.MAIL_LOG_FILE || './emailthecode.jsonl',
+    allowedFromDomains: (env.EMAILTHECODE_ALLOWED_FROM_DOMAINS || env.MAIL_ALLOWED_FROM_DOMAINS || '')
       .split(',')
       .map((value) => value.trim().toLowerCase())
       .filter(Boolean),
-    rateLimit: parseInt(env.COCOMAIL_RATE_LIMIT || '120', 10),
+    rateLimit: parseInt(env.EMAILTHECODE_RATE_LIMIT || '120', 10),
   };
 }
 
 function startServer(options = {}) {
   const env = options.env || process.env;
   const config = configFromEnv(env);
-  const mailer = options.mailer || new CocoMail();
+  const mailer = options.mailer || new EmailTheCode();
   const server = createApp({
     mailer,
     apiKey: config.apiKey,
@@ -234,7 +234,7 @@ function startServer(options = {}) {
   server.listen(port, host, () => {
     const address = server.address();
     const actualPort = address && typeof address === 'object' ? address.port : port;
-    (options.logger || console).log('[CoCoMail] listening on http://' + host + ':' + actualPort);
+    (options.logger || console).log('[EmailTheCode] listening on http://' + host + ':' + actualPort);
   });
   return { server, config, host, port };
 }

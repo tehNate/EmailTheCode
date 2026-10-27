@@ -9,7 +9,7 @@ export interface SmtpConfig {
   rejectUnauthorized?: boolean;
 }
 
-export interface CocoMailConfig {
+export interface EmailTheCodeConfig {
   smtp?: SmtpConfig;
   sendmailPath?: string;
   transport?: (input: {
@@ -44,11 +44,11 @@ export interface Emails {
   send(payload: EmailPayload): Promise<EmailResult>;
 }
 
-export declare class CocoMail {
-  constructor(config?: CocoMailConfig);
-  config: CocoMailConfig;
+export declare class EmailTheCode {
+  constructor(config?: EmailTheCodeConfig);
+  config: EmailTheCodeConfig;
   emails: Emails;
 }
 
-export { CocoMail as Resend };
-export default CocoMail;
+export { EmailTheCode as Resend };
+export default EmailTheCode;

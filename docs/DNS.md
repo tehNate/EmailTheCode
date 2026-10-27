@@ -1,11 +1,11 @@
-# DNS setup for CoCoMail
+# DNS setup for EmailTheCode
 
 These records assume:
 
 - sending domain: `example.com`
 - mail hostname: `mail.example.com`
 - server IPv4: `192.0.2.10` (documentation range; replace with your server)
-- DKIM selector: `cocomail`
+- DKIM selector: `emailthecode`
 
 Do not copy the documentation IP or domain into production.
 
@@ -34,7 +34,7 @@ relay as well, add its `include:` mechanism.
 Generate a 2048-bit key on the mail server, then publish the public key:
 
 ```text
-cocomail._domainkey.example.com.  TXT  "v=DKIM1; h=sha256; k=rsa; p=..."
+emailthecode._domainkey.example.com.  TXT  "v=DKIM1; h=sha256; k=rsa; p=..."
 ```
 
 Keep the private key on the mail server, readable only by the signing service.
@@ -63,7 +63,7 @@ A mismatched or generic PTR is a common reason for spam placement.
 ## 6. Verify
 
 ```bash
-cocomail doctor --domain example.com --selector cocomail
+emailthecode doctor --domain example.com --selector emailthecode
 ```
 
 Expected: SPF, DMARC, and DKIM records are present, SMTP verifies if configured,

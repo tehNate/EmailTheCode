@@ -48,20 +48,20 @@ Create the key:
 
 ```bash
 sudo mkdir -p /etc/opendkim/keys/example.com
-sudo opendkim-genkey -D /etc/opendkim/keys/example.com -d example.com -s cocomail
+sudo opendkim-genkey -D /etc/opendkim/keys/example.com -d example.com -s emailthecode
 sudo chown -R opendkim:opendkim /etc/opendkim
 ```
 
 `/etc/opendkim/key.table`:
 
 ```text
-cocomail example.com:cocomail:/etc/opendkim/keys/example.com/cocomail.private
+emailthecode example.com:emailthecode:/etc/opendkim/keys/example.com/emailthecode.private
 ```
 
 `/etc/opendkim/signing.table`:
 
 ```text
-*@example.com cocomail
+*@example.com emailthecode
 ```
 
 `/etc/opendkim.conf` essentials:
@@ -79,36 +79,36 @@ SigningTable refile:/etc/opendkim/signing.table
 ```
 
 Publish the TXT record from
-`/etc/opendkim/keys/example.com/cocomail.txt`, then:
+`/etc/opendkim/keys/example.com/emailthecode.txt`, then:
 
 ```bash
 sudo systemctl restart opendkim postfix
-sudo opendkim-testkey -d example.com -s cocomail -vvv
+sudo opendkim-testkey -d example.com -s emailthecode -vvv
 ```
 
-## CoCoMail
+## EmailTheCode
 
 ```bash
-export COCOMAIL_API_KEY="$(openssl rand -hex 32)"
-export COCOMAIL_ALLOWED_FROM_DOMAINS="example.com"
-cocomail serve
+export EMAILTHECODE_API_KEY="$(openssl rand -hex 32)"
+export EMAILTHECODE_ALLOWED_FROM_DOMAINS="example.com"
+emailthecode serve
 ```
 
-Or point CoCoMail at a relay:
+Or point EmailTheCode at a relay:
 
 ```bash
-export COCOMAIL_SMTP_HOST=127.0.0.1
-export COCOMAIL_SMTP_PORT=25
+export EMAILTHECODE_SMTP_HOST=127.0.0.1
+export EMAILTHECODE_SMTP_PORT=25
 ```
 
 ## Test
 
 ```bash
-cocomail send \
+emailthecode send \
   --from "Example <noreply@example.com>" \
   --to your-test-mailbox@example.net \
-  --subject "CoCoMail test" \
-  --text "Hello from CoCoMail"
+  --subject "EmailTheCode test" \
+  --text "Hello from EmailTheCode"
 ```
 
 Check the received headers for `spf=pass`, `dkim=pass`, and `dmarc=pass`.

@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { CocoMail } = require('../src');
+const { EmailTheCode } = require('../src');
 const { createApp, configFromEnv } = require('../src/server');
 
 function listen(server) {
@@ -20,10 +20,10 @@ function close(server) {
 
 test('configFromEnv reads namespaced and legacy variables', () => {
   const config = configFromEnv({
-    COCOMAIL_API_KEY: 'key',
-    COCOMAIL_HOST: '0.0.0.0',
-    COCOMAIL_PORT: '3200',
-    COCOMAIL_ALLOWED_FROM_DOMAINS: 'example.com, example.org',
+    EMAILTHECODE_API_KEY: 'key',
+    EMAILTHECODE_HOST: '0.0.0.0',
+    EMAILTHECODE_PORT: '3200',
+    EMAILTHECODE_ALLOWED_FROM_DOMAINS: 'example.com, example.org',
   });
   assert.equal(config.apiKey, 'key');
   assert.equal(config.host, '0.0.0.0');
@@ -35,9 +35,9 @@ test('configFromEnv reads namespaced and legacy variables', () => {
 });
 
 test('HTTP API requires auth, sends, and can look up the log', async () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cocomail-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'emailthecode-'));
   const logFile = path.join(dir, 'mail.jsonl');
-  const mailer = new CocoMail({ transport: async ({ id }) => ({ queueId: 'Q-' + id }) });
+  const mailer = new EmailTheCode({ transport: async ({ id }) => ({ queueId: 'Q-' + id }) });
   const server = createApp({
     mailer,
     apiKey: 'test-key',
@@ -50,7 +50,7 @@ test('HTTP API requires auth, sends, and can look up the log', async () => {
   try {
     let res = await fetch(base + '/health');
     assert.equal(res.status, 200);
-    assert.equal((await res.json()).service, 'cocomail');
+    assert.equal((await res.json()).service, 'emailthecode');
 
     res = await fetch(base + '/emails', {
       method: 'POST',
@@ -100,5 +100,5 @@ test('HTTP API requires auth, sends, and can look up the log', async () => {
 });
 
 test('refuses to create an app without an API key', () => {
-  assert.throws(() => createApp({ mailer: new CocoMail({ transport: async () => ({}) }) }), /apiKey/);
+  assert.throws(() => createApp({ mailer: new EmailTheCode({ transport: async () => ({}) }) }), /apiKey/);
 });

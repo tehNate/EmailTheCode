@@ -1,11 +1,11 @@
-# CoCoMail HTTP API
+# EmailTheCode HTTP API
 
 Base URL example: `http://127.0.0.1:3100`
 
 All endpoints except `GET /health` require:
 
 ```http
-Authorization: Bearer <COCOMAIL_API_KEY>
+Authorization: Bearer <EMAILTHECODE_API_KEY>
 ```
 
 ## `GET /health`
@@ -13,7 +13,7 @@ Authorization: Bearer <COCOMAIL_API_KEY>
 Public. Returns:
 
 ```json
-{ "status": "ok", "service": "cocomail", "time": "2026-01-01T00:00:00.000Z" }
+{ "status": "ok", "service": "emailthecode", "time": "2026-01-01T00:00:00.000Z" }
 ```
 
 ## `POST /emails`

@@ -1,5 +1,5 @@
 {
-  "name": "cocomail",
+  "name": "emailthecode",
   "version": "0.1.0",
   "description": "Self-hosted, Resend-shaped transactional email API and Node.js client.",
   "keywords": [
@@ -12,11 +12,11 @@
     "resend-alternative"
   ],
   "license": "GPL-3.0-only",
-  "author": "CoCoMail contributors",
+  "author": "EmailTheCode contributors",
   "main": "src/index.js",
   "types": "types/index.d.ts",
   "bin": {
-    "cocomail": "bin/cocomail.js"
+    "emailthecode": "bin/emailthecode.js"
   },
   "exports": {
     ".": {
@@ -41,7 +41,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "start": "node bin/cocomail.js serve",
+    "start": "node bin/emailthecode.js serve",
     "test": "node --test",
     "test:watch": "node --test --watch",
     "pack:check": "npm pack --dry-run",
@@ -52,10 +52,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tehNate/cocomail.git"
+    "url": "https://github.com/tehNate/EmailTheCode.git"
   },
   "bugs": {
-    "url": "https://github.com/tehNate/cocomail/issues"
+    "url": "https://github.com/tehNate/EmailTheCode/issues"
   },
   "publishConfig": {
     "access": "public"
